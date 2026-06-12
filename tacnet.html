@@ -1,120 +1,207 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TACNET - Tactical Search Command</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Open-Source Live Mapping Engine Styles & Scripts -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         .tactical-dark { background-color: #050b14; }
         .panel-glass {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(8px);
         }
-        #drawing-canvas { pointer-events: none; }
-        .map-locked { pointer-events: none !important; }
+        /* Forces map view to take up full screen space minus headers/footers */
+        #map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .leaflet-control-container { display: none !important; } /* Cleans up map clutter for tactical display */
     </style>
 </head>
-<body class="tactical-dark min-h-screen text-white font-sans flex flex-col justify-between">
+<body class="tactical-dark min-h-screen text-white font-sans flex flex-col justify-between overflow-hidden">
 
     <!-- CRITICAL EMERGENCY BROADCAST BANNER -->
-    <div id="emergency-banner" class="hidden bg-red-700 border-b-4 border-red-500 text-center p-3 animate-pulse shadow-2xl">
-        <h2 class="text-xl font-black tracking-widest"><i class="fa-solid fa-triangle-exclamation mr-2"></i> OFFICER DOWN / EMERGENCY BROADCAST ACTIVE <i class="fa-solid fa-triangle-exclamation ml-2"></i></h2>
-        <p class="text-xs font-bold mt-0.5 mb-2">ALL UNITS RESPOND TO LAST KNOWN COORDINATES</p>
-        <button onclick="cancelEmergencySignal()" class="bg-slate-950 hover:bg-slate-900 border border-white/40 text-white text-xs font-black tracking-widest uppercase px-4 py-1.5 rounded shadow-md transition active:scale-95">
-            <i class="fa-solid fa-circle-check text-green-400 mr-1.5"></i> Cancel / Reset Emergency
+    <div id="emergency-banner" class="hidden bg-red-700 border-b-4 border-red-500 text-center p-2 animate-pulse shadow-2xl z-50 relative">
+        <h2 class="text-sm md:text-base font-black tracking-widest"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> EMERGENCY ACTIVE <i class="fa-solid fa-triangle-exclamation ml-1.5"></i></h2>
+        <button onclick="cancelEmergencySignal()" class="mt-1 bg-slate-950 hover:bg-slate-900 border border-white/40 text-white text-[10px] font-black uppercase px-3 py-1 rounded shadow-md">
+            Cancel / Reset Emergency
         </button>
     </div>
 
-    <!-- MAIN TACTICAL MAP DISPLAY VIEWPORT -->
-    <div class="relative w-full flex-grow bg-slate-900 overflow-hidden min-h-[450px]">
-        <div id="mock-map-viewport" class="absolute inset-0 bg-cover bg-center transition-all duration-300" style="background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200');"></div>
-        <canvas id="drawing-canvas" class="absolute inset-0 w-full h-full z-10"></canvas>
-        <div id="perimeter-ring" class="hidden absolute border-4 border-emerald-400 rounded-full bg-emerald-500/10 pointer-events-none z-20 shadow-[0_0_15px_#34d399]"></div>
+    <!-- MAIN TACTICAL VIEWPORT FRAME -->
+    <div class="relative w-full flex-grow bg-slate-900 overflow-hidden relative">
+        
+        <!-- THE LIVE REAL-TIME MAP CONTAINER -->
+        <div id="map"></div>
 
-        <!-- APP HEADER CONTROL DECK BLOCK -->
-        <div class="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center space-y-1 w-full max-w-[280px] px-2">
-            <!-- DOCK BUTTON LINK TO JUMP STRAIGHT BACK TO LEX HOME -->
-            <a href="./index.html" class="w-full bg-slate-950/90 border border-slate-700 text-slate-300 font-bold text-[10px] py-1 rounded text-center tracking-widest uppercase shadow-md"><i class="fa-solid fa-arrow-left text-blue-400 mr-1.5"></i> Return to LEX Main Deck</a>
-            <div class="flex w-full space-x-1 pt-1">
-                <input id="op-token" type="text" placeholder="Operation Token" class="w-1/2 bg-slate-950/90 border border-blue-500 px-2 py-1 rounded text-[10px] text-center uppercase tracking-wider font-bold text-blue-400 placeholder-blue-700 focus:outline-none">
-                <input id="cad-feed-url" type="text" placeholder="Agency CAD Hook" class="w-1/2 bg-slate-950/90 border border-slate-700 px-2 py-1 rounded text-[10px] text-center tracking-wider font-semibold text-slate-300 placeholder-slate-600 focus:outline-none focus:border-blue-500">
+        <!-- APP HEADER CONTROL DECK (TOP CENTER) -->
+        <div class="absolute top-2 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center space-y-1 w-[92%] max-w-[280px]">
+            <a href="./index.html" class="w-full bg-slate-950/95 border border-slate-700 text-slate-300 font-bold text-[9px] py-1 rounded text-center tracking-widest uppercase shadow-md">
+                <i class="fa-solid fa-arrow-left text-blue-400 mr-1.5"></i> Return to LEX Main Deck
+            </a>
+            <div class="flex w-full space-x-1">
+                <input id="op-token" type="text" placeholder="Operation Token" class="w-1/2 bg-slate-950/95 border border-blue-500 px-2 py-1 rounded text-[9px] text-center uppercase tracking-wider font-bold text-blue-400 placeholder-blue-700 focus:outline-none">
+                <input id="cad-feed-url" type="text" placeholder="Agency CAD Hook" class="w-1/2 bg-slate-950/95 border border-slate-700 px-2 py-1 rounded text-[9px] text-center tracking-wider font-semibold text-slate-300 placeholder-slate-600 focus:outline-none">
             </div>
-            <button onclick="initializeSecureNetworks()" class="w-full bg-emerald-700 hover:bg-emerald-600 font-black text-[10px] py-1 rounded tracking-widest uppercase shadow-md">Sync Data Feeds</button>
+            <button onclick="initializeSecureNetworks()" class="w-full bg-emerald-700 hover:bg-emerald-600 font-black text-[9px] py-1 rounded tracking-widest uppercase shadow-md">Sync Data Feeds</button>
         </div>
 
-        <!-- SEARCHERS LEGEND OVERLAY PANEL -->
-        <div class="absolute top-16 left-3 z-30 panel-glass p-3 rounded-lg max-w-[150px] text-xs">
-            <h4 class="font-black border-b border-white/20 pb-1 mb-2 tracking-wider uppercase text-blue-400 text-[10px]">Searchers Legend</h4>
-            <div class="space-y-1.5 font-semibold text-[10px]">
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-blue-600 mr-1.5"></span>LE Units</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-cyan-400 mr-1.5"></span>K9 Teams</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-red-600 mr-1.5"></span>SAR Teams</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-green-600 mr-1.5"></span>Civilians</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-purple-600 mr-1.5"></span>Suspect</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-gray-500 mr-1.5"></span>Drones</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-black border border-white/40 mr-1.5"></span>Suspect Veh</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-yellow-400 mr-1.5"></span>Article Find</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
-                <div class="flex items-center justify-between"><span><i class="fa-solid fa-star text-red-600 mr-1 text-[9px]"></i>Command Post</span><input type="checkbox" checked class="rounded bg-slate-800 border-none"></div>
+        <!-- SEARCHERS LEGEND OVERLAY PANEL (BOTTOM LEFT - REPOSITIONED FOR MOBILE SIZING) -->
+        <div class="absolute bottom-2 left-2 z-30 panel-glass p-2 rounded-lg w-[135px] text-xs shadow-xl">
+            <h4 class="font-black border-b border-white/20 pb-0.5 mb-1 tracking-wider uppercase text-blue-400 text-[9px]">Legend</h4>
+            <div class="space-y-1 font-semibold text-[9px]">
+                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-blue-600 mr-1.5"></span>LE Units</span><input type="checkbox" checked class="rounded bg-slate-800 border-none scale-75"></div>
+                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-cyan-400 mr-1.5"></span>K9 Teams</span><input type="checkbox" checked class="rounded bg-slate-800 border-none scale-75"></div>
+                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-red-600 mr-1.5"></span>SAR Teams</span><input type="checkbox" checked class="rounded bg-slate-800 border-none scale-75"></div>
+                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-purple-600 mr-1.5"></span>Suspect</span><input type="checkbox" checked class="rounded bg-slate-800 border-none scale-75"></div>
+                <div class="flex items-center justify-between"><span><span class="inline-block h-2 w-2 rounded-full bg-yellow-400 mr-1.5"></span>Article</span><input type="checkbox" checked class="rounded bg-slate-800 border-none scale-75"></div>
             </div>
         </div>
 
-        <!-- ADDRESS SEARCH INPUT BAR OVERLAY -->
-        <div class="absolute top-16 right-3 z-30 flex items-center space-x-1 max-w-[140px] w-full">
-            <input id="search-address" type="text" placeholder="Address..." class="w-full bg-slate-950/90 border border-slate-700 px-2 py-1 rounded text-[10px] focus:outline-none focus:border-blue-500 text-white font-medium">
-            <button onclick="executeAddressSearch()" class="bg-blue-600 hover:bg-blue-500 font-bold text-[10px] px-2 py-1 rounded tracking-wider uppercase">GO</button>
+        <!-- ADDRESS SEARCH INPUT BAR OVERLAY (TOP RIGHT - ADAPTED TO IPHONE EDGE) -->
+        <div class="absolute top-[75px] right-2 z-30 flex items-center space-x-1 max-w-[130px] w-full">
+            <input id="search-address" type="text" placeholder="Address..." class="w-full bg-slate-950/95 border border-slate-700 px-2 py-1 rounded text-[9px] focus:outline-none focus:border-blue-500 text-white font-medium shadow-md">
+            <button onclick="executeAddressSearch()" class="bg-blue-600 hover:bg-blue-500 font-bold text-[9px] px-2 py-1 rounded tracking-wider uppercase shadow-md">GO</button>
         </div>
 
-        <!-- TACTICAL MAP NIGHT MODIFIER CONTROLS -->
-        <div class="absolute bottom-3 left-3 z-30 flex flex-col space-y-2">
-            <button onclick="toggleGloLight('red')" class="bg-red-950/80 border border-red-500/40 text-red-400 font-black text-[10px] tracking-widest uppercase px-2.5 py-1.5 rounded shadow-lg">NEON RED GLO</button>
-            <button onclick="toggleGloLight('green')" class="bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 font-black text-[10px] tracking-widest uppercase px-2.5 py-1.5 rounded shadow-lg">NEON GRN GLO</button>
-        </div>
-
-        <!-- TACTICAL OVERLAY TOOLS CONFIGURATION -->
-        <div class="absolute bottom-3 right-3 z-30 flex flex-col space-y-2">
-            <button id="pen-btn" onclick="toggleMarkerPen()" class="bg-slate-950/90 border border-slate-700 text-slate-200 font-black text-[10px] tracking-widest uppercase px-3 py-2 rounded shadow-xl flex items-center space-x-1.5"><i class="fa-solid fa-pen-clip"></i> <span>RED PEN OFF</span></button>
-            <button onclick="changeMapLayer('satellite')" class="bg-slate-950/90 border border-slate-700 text-slate-200 font-black text-[10px] tracking-widest uppercase px-3 py-2 rounded shadow-xl">SATELLITE</button>
-            <button onclick="changeMapLayer('terrain')" class="bg-slate-950/90 border border-slate-700 text-slate-200 font-black text-[10px] tracking-widest uppercase px-3 py-2 rounded shadow-xl">TERRAIN</button>
+        <!-- MAP TILE FILTER MODIFIERS (BOTTOM RIGHT) -->
+        <div class="absolute bottom-2 right-2 z-30 flex flex-col space-y-1.5">
+            <button onclick="changeMapLayer('satellite')" class="bg-slate-950/95 border border-slate-700 text-slate-200 font-black text-[9px] tracking-widest uppercase px-2 py-1.5 rounded shadow-xl">SATELLITE</button>
+            <button onclick="changeMapLayer('streets')" class="bg-slate-950/95 border border-slate-700 text-slate-200 font-black text-[9px] tracking-widest uppercase px-2 py-1.5 rounded shadow-xl">STREETS</button>
         </div>
     </div>
 
     <!-- REPORT PREVIEW INJECTOR WINDOW -->
-    <div id="report-preview-pane" class="hidden w-full max-w-md mx-auto my-4 panel-glass rounded-xl p-4 overflow-y-auto max-h-[400px] shadow-2xl">
-        <div class="flex justify-between items-center mb-4 border-b border-white/20 pb-2">
-            <h3 class="text-amber-400 font-black tracking-wide uppercase text-sm">📋 Court Document Dossier Preview</h3>
-            <button onclick="printGeneratedReport()" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-xs font-black uppercase tracking-wider">Print / Save PDF</button>
+    <div id="report-preview-pane" class="hidden w-full max-w-sm mx-auto my-2 panel-glass rounded-xl p-3 overflow-y-auto max-h-[250px] shadow-2xl z-40 relative">
+        <div class="flex justify-between items-center mb-2 border-b border-white/20 pb-1">
+            <h3 class="text-amber-400 font-black tracking-wide uppercase text-xs">📋 Court Document Dossier</h3>
+            <button onclick="printGeneratedReport()" class="bg-emerald-600 hover:bg-emerald-500 px-2 py-0.5 rounded text-[10px] font-black uppercase">Print</button>
         </div>
-        <div id="dossier-html-target" class="bg-white rounded-lg overflow-hidden"></div>
+        <div id="dossier-html-target" class="bg-white rounded p-2 text-black"></div>
     </div>
 
     <!-- LOWER CONTROLS & TERMINATION DASHBOARD -->
-    <footer class="bg-slate-950 border-t border-slate-800 p-4 flex flex-col space-y-3">
-        <div class="grid grid-cols-3 gap-2 text-center text-xs font-black tracking-wider uppercase">
-            <button onclick="navigationAction('reset')" class="bg-slate-900 border border-slate-700 py-2 rounded hover:bg-slate-800">Reset Section</button>
-            <button onclick="navigationAction('back')" class="bg-slate-900 border border-slate-700 py-2 rounded hover:bg-slate-800">Back</button>
-            <a href="./index.html" class="bg-slate-900 border border-slate-700 py-2 rounded hover:bg-slate-800 flex items-center justify-center">Return Home</a>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="triggerEmergencySignal()" class="bg-red-700 hover:bg-red-600 font-black tracking-widest uppercase text-sm py-3 rounded-xl shadow-lg border border-red-500 animate-pulse flex items-center justify-center space-x-2">
+    <footer class="bg-slate-950 border-t border-slate-800 p-3 flex flex-col space-y-2 z-40 relative">
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="triggerEmergencySignal()" class="bg-red-700 hover:bg-red-600 font-black tracking-widest uppercase text-xs py-2 rounded-lg shadow-lg flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-hand-fist"></i> <span>OFFICER DOWN SIGNAL</span>
             </button>
-            <button onclick="terminateSearchSequence()" class="bg-amber-600 hover:bg-amber-500 font-black tracking-widest uppercase text-sm py-3 rounded-xl shadow-lg border border-amber-500 flex items-center justify-center space-x-2">
+            <button onclick="terminateSearchSequence()" class="bg-amber-600 hover:bg-amber-500 font-black tracking-widest uppercase text-xs py-2 rounded-lg shadow-lg flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-circle-stop"></i> <span>TERMINATE SEARCH</span>
             </button>
         </div>
     </footer>
 
-    <!-- LOGIC INTEGRATION HUB -->
+    <!-- LIVE LOGIC & MAP ENGINE SCRIPTS -->
     <script>
-        let penActive = false;
-        let gloActive = null;
+        let map = null;
+        let activeLayer = null;
+        let searchCircle = null;
+        let currentOfficerMarker = null;
         let reportRecorder = null;
         let alarmInterval = null;
 
+        // Initialize Live Map System on boot
+        window.addEventListener('DOMContentLoaded', () => {
+            reportRecorder = new CourtReportGenerator("OP-2026-AMHERST", "Deputy Earl Wood (Ret.)");
+            reportRecorder.logSearchEvent("SYSTEM", "TACNET Mobile Control Online.");
+            new TacticalVoiceController().initializeVoiceEngine();
+
+            // Setup the base Leaflet map coordinates configuration (starts centered on USA generic blueprint)
+            map = L.map('map', { zoomControl: false }).setView([37.0902, -95.7129], 4);
+            
+            // Set default Map style to clear, responsive Streets layout
+            changeMapLayer('streets');
+
+            // Locate your phone's real GPS coordinates and center immediately
+            map.locate({setView: true, maxZoom: 16, watch: true, enableHighAccuracy: true});
+            
+            map.on('locationfound', (e) => {
+                if (!currentOfficerMarker) {
+                    // Create a crisp royal blue dot marker for your cruiser location footprint
+                    const blueDotIcon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: "<div class='h-3 w-3 bg-blue-600 rounded-full border-2 border-white shadow-[0_0_8px_#2563eb]'></div>",
+                        iconSize: [12, 12]
+                    });
+                    currentOfficerMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map);
+                    if(reportRecorder) reportRecorder.logSearchEvent("GPS", `Position Lock Established: USA Grid Grid.`);
+                } else {
+                    currentOfficerMarker.setLatLng(e.latlng);
+                }
+            });
+
+            map.on('locationerror', () => {
+                console.log("GPS signal locating standby.");
+            });
+        });
+
+        function changeMapLayer(type) {
+            if (activeLayer) map.removeLayer(activeLayer);
+            
+            if (type === 'satellite') {
+                // High-definition satellite photography tiles layer
+                activeLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri'
+                }).addTo(map);
+            } else {
+                // Clear, high-contrast tactical street and road lines tile layer
+                activeLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{y}/{x}.png', {
+                    attribution: 'CartoDB'
+                }).addTo(map);
+            }
+        }
+
+        async function executeAddressSearch() {
+            const addr = document.getElementById('search-address').value.trim();
+            if (!addr) return;
+            
+            if(reportRecorder) reportRecorder.logSearchEvent("COMMAND", `Target location lookup initiated: ${addr}`);
+            
+            // Uses a free, lightning-fast open-source geocoding service to find the real physical address coordinates
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}`);
+                const results = await response.json();
+                
+                if (results && results.length > 0) {
+                    const lat = parseFloat(results[0].lat);
+                    const lon = parseFloat(results[0].lon);
+                    const centerPoint = [lat, lon];
+                    
+                    map.setView(centerPoint, 15);
+
+                    if (searchCircle) map.removeLayer(searchCircle);
+                    
+                    // Drops your automated emerald visual containment perimeter ring onto the real map coordinates
+                    searchCircle = L.circle(centerPoint, {
+                        color: '#34d399',
+                        fillColor: '#10b981',
+                        fillOpacity: 0.15,
+                        radius: 300,
+                        weight: 3
+                    }).addTo(map);
+                } else {
+                    alert("Target address location could not be verified on the state grid.");
+                }
+            } catch(e) {
+                alert("Network communication timeout. Checking routing status.");
+            }
+        }
+
+        // =========================================================================
+        // SIGNALS & BACKEND TIMELINE RECORDER HOOKS
+        // =========================================================================
         class CourtReportGenerator {
             constructor(operationId, supervisor) {
                 this.operationId = operationId;
@@ -129,53 +216,20 @@
                 });
             }
             compileFinalDossier() {
-                let htmlDossier = `
-                    <div style="font-family: Arial, sans-serif; padding: 25px; color: #111; background-color: #ffffff;">
-                        <div style="background: linear-gradient(90deg, #1e3a8a 0%, #065f46 100%); padding: 20px; text-align: center; border-radius: 6px; color: white;">
-                            <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; font-weight: 900;">TACNET MULTI-AGENCY TASK FORCE</h1>
-                            <p style="margin: 5px 0 0 0; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #cbd5e1;">Official Post-Incident Search Dossier & Legal Evidence Log</p>
-                        </div>
-                        <table style="width: 100%; margin-top: 15px; font-size: 13px; border-collapse: collapse;">
-                            <tr>
-                                <td style="padding: 4px; font-weight: bold; width: 25%;">Operation ID:</td><td style="padding: 4px;">${this.operationId}</td>
-                                <td style="padding: 4px; font-weight: bold; width: 25%;">Compiling Authority:</td><td style="padding: 4px;">${this.supervisor}</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 4px; font-weight: bold;">Date Compiled:</td><td style="padding: 4px;">${new Date().toLocaleDateString()}</td>
-                                <td style="padding: 4px; font-weight: bold;">System Status:</td><td style="color: #b91c1c; padding: 4px; font-weight: bold;">TERMINATED / ARCHIVED</td>
-                            </tr>
-                        </table>
-                        <h3 style="margin-top: 25px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #1e3a8a; font-size: 16px; font-weight: 800;">Itemized Incident Timeline Log</h3>
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px;">
-                            <thead>
-                                <tr style="background-color: #f1f5f9; text-align: left;">
-                                    <th style="padding: 6px; border: 1px solid #cbd5e1; width: 20%;">Timestamp</th>
-                                    <th style="padding: 6px; border: 1px solid #cbd5e1; width: 25%;">Tactical Unit</th>
-                                    <th style="padding: 6px; border: 1px solid #cbd5e1;">Logged Activity / Evidence Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+                let htmlDossier = `<div style='font-family:Arial;padding:15px;color:#111;'><h4>TACNET OFFICIAL COURT REPORT</h4><p>Op ID: ${this.operationId}</p><p>Supervisor: ${this.supervisor}</p><hr style='border:1px solid #ddd;margin:8px 0;'>`;
                 this.timelineEvents.forEach(ev => {
-                    htmlDossier += `<tr><td style="padding: 6px; border: 1px solid #e2e8f0; font-family: monospace;">${ev.timestamp}</td><td style="padding: 6px; border: 1px solid #e2e8f0; font-weight: bold;">${ev.unit}</td><td style="padding: 6px; border: 1px solid #e2e8f0;">${ev.description}</td></tr>`;
+                    htmlDossier += `<p style='margin:4px 0;font-size:11px;'><b>[${ev.timestamp}] [${ev.unit}]:</b> ${ev.description}</p>`;
                 });
-                htmlDossier += `</tbody></table><p style="margin-top: 30px; font-size: 10px; color: #64748b; text-align: center; font-style: italic; border-top: 1px dashed #cbd5e1; padding-top: 10px;">Data integrity authenticated by TACNET Recording Systems.</p></div>`;
-                return htmlDossier;
+                return htmlDossier + "</div>";
             }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            reportRecorder = new CourtReportGenerator("OP-2026-AMHERST", "Deputy Earl Wood (Ret.)");
-            reportRecorder.logSearchEvent("SYSTEM", "TACNET Local Control Core Booted.");
-            new TacticalVoiceController().initializeVoiceEngine();
-        });
 
         function initializeSecureNetworks() {
             const token = document.getElementById('op-token').value.trim().toUpperCase();
             const cadUrl = document.getElementById('cad-feed-url').value.trim();
-            if (token && reportRecorder) reportRecorder.logSearchEvent("ROUTE A P2P", `Secure Mesh Initialized. Token Locked: ${token}`);
-            if (cadUrl && reportRecorder) reportRecorder.logSearchEvent("ROUTE B CAD", `Direct dispatch hook linked: ${cadUrl}`);
-            alert("🔒 TACNET Secure Channels Bound Successfully.");
+            if (token && reportRecorder) reportRecorder.logSearchEvent("MESH", `Operation token synchronized: ${token}`);
+            if (cadUrl && reportRecorder) reportRecorder.logSearchEvent("CAD", `CAD endpoint registered.`);
+            alert("🔒 Secure pipelines updated successfully.");
         }
 
         class TacticalVoiceController {
@@ -189,20 +243,11 @@
                 this.recognition.onresult = (event) => {
                     const lastResultIndex = event.results.length - 1;
                     const spokenText = event.results[lastResultIndex][0].transcript.trim().toUpperCase();
-                    this.parseTacticalCommand(spokenText);
+                    if (phrase.includes("TACNET") && phrase.includes("EMERGENCY")) triggerEmergencySignal();
+                    if (phrase.includes("TACNET") && (phrase.includes("CANCEL EMERGENCY") || phrase.includes("RESET EMERGENCY"))) cancelEmergencySignal();
                 };
                 try { this.recognition.start(); } catch(e) {}
             }
-            parseTacticalCommand(phrase) {
-                if (phrase.includes("TACNET") && phrase.includes("MARK ARTICLE")) dropSimulatedArticleMarker();
-                if (phrase.includes("TACNET") && phrase.includes("EMERGENCY")) { triggerEmergencySignal(); window.location.href = "tel:911"; }
-                if (phrase.includes("TACNET") && (phrase.includes("CANCEL EMERGENCY") || phrase.includes("RESET EMERGENCY"))) cancelEmergencySignal();
-            }
-        }
-
-        function dropSimulatedArticleMarker() {
-            if(reportRecorder) reportRecorder.logSearchEvent("K9 Team", "Evidence Article registered at tracking footprint.");
-            alert("🔊 TACNET Voice Confirmation: Article marked.");
         }
 
         function triggerEmergencyAudioSignature() {
@@ -214,23 +259,22 @@
                     oscillator.type = 'sawtooth';
                     oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
                     oscillator.frequency.linearRampToValueAtTime(440, audioCtx.currentTime + 0.4);
-                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
                     oscillator.connect(gainNode);
                     gainNode.connect(audioCtx.destination);
-                    oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.4);
+                    oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.4);
                 }, 500);
             }
         }
 
         function triggerEmergencySignal() {
             document.getElementById('emergency-banner').classList.remove('hidden');
-            if(reportRecorder) reportRecorder.logSearchEvent("ALERT", "CRITICAL OFFICER DISTRESS SIGNAL DEPLOYED ON OPERATIONS CHANNEL");
+            if(reportRecorder) reportRecorder.logSearchEvent("ALERT", "CRITICAL DISTRESS TRANSMISSION DEPLOYED.");
             triggerEmergencyAudioSignature();
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const alertText = new SpeechSynthesisUtterance("Emergency Broadcast Active. Officer Needs Assistance.");
-                alertText.rate = 0.85;
+                const alertText = new SpeechSynthesisUtterance("Emergency Active.");
+                alertText.rate = 1.0;
                 window.speechSynthesis.speak(alertText);
             }
         }
@@ -238,81 +282,24 @@
         function cancelEmergencySignal() {
             document.getElementById('emergency-banner').classList.add('hidden');
             if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
-            if(reportRecorder) reportRecorder.logSearchEvent("SYSTEM", "Emergency signal cleared. Unit reports Situation Code-4.");
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const clearText = new SpeechSynthesisUtterance("Emergency cleared.");
-                clearText.rate = 0.85;
-                window.speechSynthesis.speak(clearText);
-            }
-        }
-
-        function executeAddressSearch() {
-            const addr = document.getElementById('search-address').value;
-            if(!addr) return;
-            if(reportRecorder) reportRecorder.logSearchEvent("COMMAND", `Target address perimeter ring lock set onto: ${addr}`);
-            const ring = document.getElementById('perimeter-ring');
-            ring.style.top = "40%"; ring.style.left = "45%"; ring.style.width = "130px"; ring.style.height = "130px";
-            ring.classList.remove('hidden');
-        }
-
-        function toggleMarkerPen() {
-            penActive = !penActive;
-            const btn = document.getElementById('pen-btn');
-            const canvas = document.getElementById('drawing-canvas');
-            const map = document.getElementById('mock-map-viewport');
-            if (penActive) {
-                btn.className = "bg-red-700 border border-red-500 text-white font-black text-[10px] tracking-widest uppercase px-3 py-2 rounded shadow-xl flex items-center space-x-1.5";
-                btn.querySelector('span').innerText = "RED PEN ACTIVE";
-                canvas.style.pointerEvents = "auto";
-                map.classList.add('map-locked');
-            } else {
-                btn.className = "bg-slate-950/90 border border-slate-700 text-slate-200 font-black text-[10px] tracking-widest uppercase px-3 py-2 rounded shadow-xl flex items-center space-x-1.5";
-                btn.querySelector('span').innerText = "RED PEN OFF";
-                canvas.style.pointerEvents = "none";
-                map.classList.remove('map-locked');
-            }
-        }
-
-        function toggleGloLight(color) {
-            const map = document.getElementById('mock-map-viewport');
-            if (gloActive === color) { map.style.filter = "none"; gloActive = null; }
-            else {
-                gloActive = color;
-                map.style.filter = (color === 'red') 
-                    ? "matrix(1, 0, 0, 0, 0.5, 0, 0.3, 0, 0, 0, 0, 0, 0.2, 0, 0, 0, 0, 0, 1, 0)" 
-                    : "hue-rotate(90deg) brightness(0.6) contrast(1.2)";
-            }
-        }
-
-        function changeMapLayer(layerType) {
-            const map = document.getElementById('mock-map-viewport');
-            map.style.backgroundImage = (layerType === 'satellite')
-                ? "url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200')"
-                : "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200')";
+            if(reportRecorder) reportRecorder.logSearchEvent("SYSTEM", "Emergency cleared. Situation Code-4.");
         }
 
         function terminateSearchSequence() {
             if(reportRecorder) {
-                reportRecorder.logSearchEvent("SYSTEM", "Search sequence officially terminated by command authorization.");
-                const compilation = reportRecorder.compileFinalDossier();
-                document.getElementById('dossier-html-target').innerHTML = compilation;
+                reportRecorder.logSearchEvent("SYSTEM", "Operations complete. Log closed.");
+                document.getElementById('dossier-html-target').innerHTML = reportRecorder.compileFinalDossier();
                 document.getElementById('report-preview-pane').classList.remove('hidden');
             }
             if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
-            document.getElementById('perimeter-ring').classList.add('hidden');
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
         function printGeneratedReport() {
-            const documentContent = document.getElementById('dossier-html-target').innerHTML;
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`<html><head><title>Court Evidence Log</title></head><body>${documentContent}</body></html>`);
-            printWindow.document.close();
-            printWindow.print();
+            const docContent = document.getElementById('dossier-html-target').innerHTML;
+            const w = window.open('', '_blank');
+            w.document.write(docContent); w.document.close(); w.print();
         }
-
-        function navigationAction(type) { console.log(`Context triggered: ${type}`); }
     </script>
 </body>
 </html>
