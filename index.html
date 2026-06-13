@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEX - Virginia Law Enforcement</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Emergency Button -->
+    <button id="emergency-btn" ontouchstart="startPress()" ontouchend="endPress()">911</button>
+
+    <!-- HUD Display Area -->
+    <div id="display">SYSTEM READY</div>
+
+    <!-- Category Grid -->
+    <div class="grid">
+        <button class="blue" onclick="query('18.2')">CRIMINAL</button>
+        <button class="yellow" onclick="query('46.2')">TRAFFIC</button>
+        <button class="green" onclick="query('29.1')">GAME-FISH</button>
+        <button class="red-cat" onclick="query('16.1')">JUVENILE</button>
+        <button class="stop" onclick="stopAudio()">STOP</button>
+        <button class="repeat" onclick="repeatLast()">REPEAT</button>
+    </div>
+
+    <script src="js/lis-engine.js"></script>
+</body>
+</html>
