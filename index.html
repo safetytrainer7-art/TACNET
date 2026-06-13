@@ -138,10 +138,10 @@
         .transmission-switch-strip.listening .transmission-heading { color: #ef4444; }
         .transmission-subtitles { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-        /* BRAND NEW TACTICAL STOP AUDIO TRANSMISSION STRIP */
+        /* REDESIGNED ANTI-JAM AUDIO CUT-OFF SWITCH */
         .stop-audio-strip {
             background: rgba(153, 27, 27, 0.2);
-            border: 1px dashed #b91c1c;
+            border: 1px solid #b91c1c;
             border-radius: 12px;
             padding: 14px;
             display: flex;
@@ -154,11 +154,6 @@
             font-size: 14px;
             font-weight: 800;
             color: #f87171;
-            transition: all 0.2s ease;
-        }
-        .stop-audio-strip:active {
-            background: rgba(153, 27, 27, 0.5);
-            border-style: solid;
         }
 
         /* Report Assistant Action Line */
@@ -219,7 +214,7 @@
                 </div>
             </div>
             <div class="system-status-pill">
-                <span class="status-pulse-dot"></span> SYSTEM ACTIVE
+                <span class="status-pulse-dot"></span> BROADCAST ON
             </div>
         </div>
 
@@ -268,7 +263,7 @@
             </div>
         </div>
 
-        <!-- ACTIVE STOP AUDIO TRANSMISSION BUTTON BUTTON -->
+        <!-- ANTI-JAM CUTOFF SWITCH -->
         <div class="stop-audio-strip" onclick="stopAudioTransmission()">
             🛑 Stop Audio Transmission
         </div>
@@ -284,10 +279,10 @@
 
         <!-- Terminal Output Screen Panel Box -->
         <div class="output-terminal" id="lex-response-box">
-            Trunk lines synchronized. Standing by for database intercept query...
+            Audio system clear. Channels active. Standing by for query transmission...
         </div>
 
-        <!-- Corrected Credentials Signature Footer -->
+        <!-- Credentials Signature Footer -->
         <footer>
             <div class="credit-tag">CREATED BY RETIRED DEPUTY SHERIFF</div>
             <div class="credit-name">EARL A. WOOD</div>
@@ -346,16 +341,21 @@
 
         function unlockAudioEngine() {
             if ('speechSynthesis' in window) {
-                let initialPayload = new SpeechSynthesisUtterance("");
-                window.speechSynthesis.speak(initialPayload);
+                // Safely clears the execution stack without freezing the engine
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
             }
         }
 
-        // ABSOLUTE AUDIO TRANSMISSION CUT-OFF SWITCH
+        // ANTI-JAM CIRCUIT RESET LOGIC
         function stopAudioTransmission() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                document.getElementById('lex-response-box').innerText = "Audio transmission terminated by operator rule.";
+                // Forces an empty speech initialization token immediately after cancel to keep lines active
+                let clearToken = new SpeechSynthesisUtterance("");
+                window.speechSynthesis.speak(clearToken);
+                document.getElementById('lex-response-box').innerText = "Audio transmission terminated. Channel clear.";
             }
         }
 
@@ -368,9 +368,7 @@
         function cleanVoicePhrases(text) {
             let phrase = text.toLowerCase().trim();
             
-            // FIXED DATA KEYWORD ROUTING FOR ACCIDENT SCENE INTEGRITY
             if (phrase.includes("leaving the scene") || phrase.includes("hit and run") || phrase.includes("accident")) return "46.2-894";
-            
             if (phrase.includes("concealed weapon") || phrase.includes("concealed carry")) return "18.2-308";
             if (phrase.includes("assault") || phrase.includes("battery")) return "18.2-57";
             if (phrase.includes("reckless driving") || phrase.includes("reckless")) return "46.2-852";
@@ -391,7 +389,7 @@
             }
 
             if (isNaN(sectionQuery) && !sectionQuery.includes('-')) {
-                if (phrase.includes("scene") || phrase.includes("accident")) { sectionQuery = "46.2-894"; }
+                if (spokenText.toLowerCase().includes("scene") || spokenText.toLowerCase().includes("accident")) { sectionQuery = "46.2-894"; }
                 else if (activeTitle === "46.2") { sectionQuery = "46.2-852"; } 
                 else { sectionQuery = "18.2-308"; }
             }
@@ -416,7 +414,6 @@
             if (outputText && outputText.trim().length > 10) {
                 outputText = outputText.replace(/<\/?[^>]+(>|$)/g, "").replace(/&nbsp;/g, " ");
             } else {
-                // HARD-CODED ACCIDENT DEFINITION FIXED FOR DEMO RELIABILITY
                 if (sectionNumber === "46.2-894") {
                     outputText = "Section 46.2-894. Duty of driver to stop in event of accident involving injury or death or damage to attended property. The driver of any vehicle involved in an accident in which a person is killed or injured or attended property is damaged shall immediately stop as close to the scene of the accident as possible and report his name, address, driver's license number, and vehicle registration number.";
                 } else if (sectionNumber === "18.2-308") {
@@ -430,11 +427,10 @@
 
             document.getElementById('lex-response-box').innerText = outputText;
             
+            window.speechSynthesis.cancel();
             const steadySpeechEngine = new SpeechSynthesisUtterance(outputText);
             steadySpeechEngine.rate = 0.88; 
             steadySpeechEngine.pitch = 1.0;
-            
-            window.speechSynthesis.cancel();
             window.speechSynthesis.speak(steadySpeechEngine);
         }
     </script>
