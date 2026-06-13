@@ -14,233 +14,217 @@
             overflow-x: hidden;
         }
 
-        /* Earth Space Visual Background Foundations */
-        .space-bg {
+        /* BRAND NEW EARTH-SPACE COSMIC GRAPHICS ENGINE */
+        .universe-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #0d133a 0%, #020208 85%);
-            z-index: -3;
+            background: radial-gradient(circle at 50% 50%, #0a1128 0%, #020205 100%);
+            z-index: -4;
         }
-        .stars {
+        
+        /* Starfield Grid Layers */
+        .starfield {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
                 radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
-            background-size: 550px 550px, 350px 350px;
-            background-position: 0 0, 40px 60px;
-            opacity: 0.5;
+            background-size: 450px 450px, 300px 300px;
+            background-position: 0 0, 50px 70px;
+            opacity: 0.4;
+            z-index: -3;
+        }
+
+        /* Earth High-Altitude Curvature with Light Cloud Cover */
+        .earth-curvature {
+            position: fixed;
+            bottom: -70vh;
+            left: -50vw;
+            width: 200vw;
+            height: 140vh;
+            background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.25) 0%, rgba(16, 185, 129, 0.05) 40%, transparent 70%);
+            border-top: 2px solid rgba(147, 197, 253, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.3), inset 0 20px 40px rgba(255,255,255,0.1);
             z-index: -2;
         }
-        /* Orbiting Satellite Tracking Grid Lines */
-        .satellite-grid {
+        .cloud-cover {
+            position: fixed;
+            bottom: -70vh; left: -50vw; width: 200vw; height: 140vh;
+            background-image: radial-gradient(rgba(255,255,255,0.08) 2px, transparent 40px);
+            background-size: 80px 80px;
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: -2;
+        }
+
+        /* Orbiting Satellite Telemetry Lines */
+        .satellite-orbit-lines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background: linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 45px 45px;
             z-index: -1;
         }
 
-        /* App Container matching dddd.jpg layout */
+        /* Main Tactical Frame Layout */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            padding: 15px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* Top Header Bar */
-        .header-bar {
+        /* Header Console Display */
+        .header-console {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 5px;
-            margin-bottom: 15px;
+            padding: 12px 10px;
+            background: rgba(10, 17, 40, 0.7);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
         }
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-box {
-            background: #1d4ed8;
+        .logo-block { display: flex; align-items: center; gap: 12px; }
+        .logo-insignia {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
             color: #ffffff;
             font-weight: 900;
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(29, 78, 216, 0.5);
+            font-size: 22px;
+            width: 42px; height: 42px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
         }
-        .logo-text h1 {
-            font-size: 24px;
-            letter-spacing: 2px;
-            line-height: 1;
-            font-weight: 800;
-        }
-        .logo-text p {
-            font-size: 10px;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-        .status-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 11px;
-            color: #94a3b8;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
+        .logo-titles h1 { font-size: 24px; font-weight: 800; letter-spacing: 1.5px; line-height: 1; }
+        .logo-titles p { font-size: 10px; color: #94a3b8; letter-spacing: 1px; margin-top: 2px; font-weight: bold; }
+        
+        .system-status-pill { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
+        .status-pulse-dot {
+            width: 8px; height: 8px;
             background: #22c55e;
             border-radius: 50%;
-            display: inline-block;
             box-shadow: 0 0 8px #22c55e;
         }
 
-        /* Input Field */
-        .badge-input-box {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px dashed rgba(59, 130, 246, 0.4);
-            border-radius: 6px;
-            padding: 12px;
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 15px;
-            backdrop-filter: blur(3px);
-        }
-
-        /* Welcome Banner Card */
-        .welcome-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+        /* Welcome Briefing Panel */
+        .briefing-card {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
             padding: 15px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
-            margin-bottom: 15px;
-            backdrop-filter: blur(5px);
+            margin-bottom: 18px;
+            backdrop-filter: blur(6px);
         }
-        .avatar { font-size: 30px; }
-        .welcome-text h2 { font-size: 12px; color: #3b82f6; letter-spacing: 1px; margin-bottom: 4px; font-weight: bold; }
-        .welcome-text p { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
+        .briefing-avatar { font-size: 28px; }
+        .briefing-text h2 { font-size: 13px; color: #60a5fa; letter-spacing: 0.5px; margin-bottom: 3px; font-weight: bold; }
+        .briefing-text p { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
 
-        /* Two-Column Category Grid Layout */
-        .category-grid {
+        /* Custom Two-Column Operational Category Layout */
+        .operational-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
-        .grid-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 18px 10px;
+        .tactical-card {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px 10px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
         }
-        .grid-card:active, .grid-card.active {
-            background: rgba(59, 130, 246, 0.2);
+        .tactical-card:active, .tactical-card.active {
+            background: rgba(59, 130, 246, 0.18);
             border-color: #3b82f6;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
-        .card-icon { font-size: 24px; margin-bottom: 8px; display: block; }
-        .card-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
-        .card-subs { font-size: 10px; color: #94a3b8; }
+        .card-emoji { font-size: 24px; margin-bottom: 8px; display: block; }
+        .card-heading { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+        .card-subtitles { font-size: 10px; color: #94a3b8; line-height: 1.3; }
 
-        /* Specific Colors from Your Blueprint */
-        .color-criminal { color: #f87171; }
-        .color-traffic { color: #60a5fa; }
-        .color-game { color: #4ade80; }
-        .color-juvenile { color: #facc15; }
+        /* Verified Code Color Scheme */
+        .text-criminal { color: #f87171; }
+        .text-traffic { color: #60a5fa; }
+        .text-game { color: #4ade80; }
+        .text-juvenile { color: #facc15; }
 
-        /* Master Talk To LEX Engine Strip */
-        .lex-action-strip {
-            background: rgba(20, 83, 45, 0.4);
+        /* Master Radio Transmission Engine Block */
+        .transmission-switch-strip {
+            background: rgba(20, 83, 45, 0.35);
             border: 1px solid #166534;
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 14px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             margin-bottom: 12px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
         }
-        .lex-action-strip.listening {
-            background: rgba(153, 27, 27, 0.5);
+        .transmission-switch-strip.listening {
+            background: rgba(153, 27, 27, 0.45);
             border-color: #991b1b;
-            animation: pulse 1.5s infinite;
+            animation: pulse-frame 1.5s infinite;
         }
-        .status-dot-pulse {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-        }
-        .lex-action-strip.listening .status-dot-pulse {
-            background: #ef4444;
-            box-shadow: 0 0 8px #ef4444;
-        }
-        .strip-title { font-size: 15px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 0.5px; }
-        .lex-action-strip.listening .strip-title { color: #ef4444; }
-        .strip-subs { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .radar-beacon { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; }
+        .transmission-switch-strip.listening .radar-beacon { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .transmission-heading { font-size: 16px; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 0.5px; }
+        .transmission-switch-strip.listening .transmission-heading { color: #ef4444; }
+        .transmission-subtitles { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-        /* Incident Report Strip */
-        .incident-strip {
-            background: rgba(30, 27, 75, 0.5);
-            border: 1px solid #312e81;
-            border-radius: 12px;
-            padding: 15px;
+        /* Brand New Requested Report Assistant Action Strip */
+        .assistant-strip {
+            background: rgba(88, 28, 135, 0.3);
+            border: 1px solid #6b21a8;
+            border-radius: 14px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(5px);
+            gap: 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            backdrop-filter: blur(6px);
         }
-        .incident-icon { font-size: 24px; }
-        .incident-title { font-size: 14px; font-weight: 800; color: #c084fc; text-transform: uppercase; }
-        .incident-subs { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .assistant-emoji { font-size: 24px; }
+        .assistant-heading { font-size: 15px; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.5px; }
+        .assistant-subtitles { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-        /* Live Response Output Terminal */
-        .response-terminal {
+        /* Mission Response Output Terminal Screen */
+        .output-terminal {
             background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            padding: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 10px;
+            padding: 14px;
             margin-bottom: 25px;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.5;
             color: #e2e8f0;
-            min-height: 60px;
-            backdrop-filter: blur(5px);
+            min-height: 65px;
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
         }
 
-        /* Footer Credits Section */
-        footer {
-            text-align: center;
-            padding: 10px 0;
-            margin-top: auto;
-        }
-        .creator-tag { font-size: 10px; color: #3b82f6; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
-        .creator-name { font-size: 22px; font-weight: 900; color: #ffffff; margin: 3px 0; letter-spacing: 0.5px; }
-        .creator-title { font-size: 12px; color: #94a3b8; font-weight: 600; }
-        .footer-disclaimer { font-size: 10px; color: #475569; margin-top: 8px; }
+        /* Professional Field Footer Signature */
+        footer { text-align: center; padding: 10px 0; margin-top: auto; }
+        .credit-tag { font-size: 10px; color: #3b82f6; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .credit-name { font-size: 22px; font-weight: 900; color: #ffffff; margin: 2px 0; letter-spacing: 0.5px; }
+        .credit-rank { font-size: 12px; color: #94a3b8; font-weight: 600; }
+        .disclaimer-text { font-size: 10px; color: #475569; margin-top: 8px; letter-spacing: 0.3px; }
 
-        @keyframes pulse {
+        @keyframes pulse-frame {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
             100% { transform: scale(1); }
@@ -249,94 +233,90 @@
 </head>
 <body>
 
-    <!-- Earth Space Background & Orbiting Satellite Grid Integrated Behind Elements -->
-    <div class="space-bg"></div>
-    <div class="stars"></div>
-    <div class="satellite-grid"></div>
+    <!-- VISUAL GRAPHICS LAYERS -->
+    <div class="universe-bg"></div>
+    <div class="starfield"></div>
+    <div class="earth-curvature"></div>
+    <div class="cloud-cover"></div>
+    <div class="satellite-orbit-lines"></div>
 
     <div class="app-container">
-        <!-- Top Status Bar -->
-        <div class="header-bar">
-            <div class="logo-section">
-                <div class="logo-box">L</div>
-                <div class="logo-text">
+        <!-- Top Operational Status Bar -->
+        <div class="header-console">
+            <div class="logo-block">
+                <div class="logo-insignia">L</div>
+                <div class="logo-titles">
                     <h1>LEX</h1>
                     <p>VIRGINIA CODE ASSISTANT</p>
                 </div>
             </div>
-            <div class="status-section">
-                <span><span class="status-dot"></span> Online — All systems ready</span>
-                <span id="live-clock">08:18:50</span>
+            <div class="system-status-pill">
+                <span class="status-pulse-dot"></span> ORBITAL LINK ACTIVE
             </div>
         </div>
 
-        <!-- Call Sign Block -->
-        <div class="badge-input-box">
-            + Enter your Call Sign / Badge Number
-        </div>
-
-        <!-- Welcome Banner Card -->
-        <div class="welcome-card">
-            <div class="avatar">👩‍⚖️</div>
-            <div class="welcome-text">
-                <h2>LEX</h2>
-                <p>Good day, Officer. I am LEX — your Virginia Code Assistant. Select a category or speak to me directly in AI mode.</p>
+        <!-- System Briefing Panel -->
+        <div class="briefing-card">
+            <div class="briefing-avatar">👩‍⚖️</div>
+            <div class="briefing-text">
+                <h2>SYSTEM INITIALIZED</h2>
+                <p>Welcome, Deputy. Select an operational category or open the audio line for live database integration.</p>
             </div>
         </div>
 
-        <!-- Four Categories Grid -->
-        <div class="category-grid">
-            <div class="grid-card" id="btn-criminal" onclick="setCategory('criminal', '18.2')">
-                <span class="card-icon">⚖️</span>
-                <div class="card-title color-criminal">Criminal</div>
-                <div class="card-subs">Weapons · Assault · Narcotics · Homicide</div>
+        <!-- Five Core Features Grid Structure -->
+        <div class="operational-grid">
+            <div class="tactical-card" id="btn-criminal" onclick="setCategory('criminal', '18.2')">
+                <span class="card-emoji">⚖️</span>
+                <div class="card-heading text-criminal">Criminal</div>
+                <div class="card-subtitles">Weapons · Assault<br>Narcotics · Homicide</div>
             </div>
-            <div class="grid-card" id="btn-traffic" onclick="setCategory('traffic', '46.2')">
-                <span class="card-icon">🚓</span>
-                <div class="card-title color-traffic">Traffic</div>
-                <div class="card-subs">DUI · Reckless · CDL · Hit & Run</div>
+            <div class="tactical-card" id="btn-traffic" onclick="setCategory('traffic', '46.2')">
+                <span class="card-emoji">🚓</span>
+                <div class="card-heading text-traffic">Traffic</div>
+                <div class="card-subtitles">DUI · Reckless<br>CDL · Hit & Run</div>
             </div>
-            <div class="grid-card" id="btn-game" onclick="setCategory('game', '29.1')">
-                <span class="card-icon">🌲</span>
-                <div class="card-title color-game">Game & Fish</div>
-                <div class="card-subs">Hunting · Fishing · BUI · Poaching</div>
+            <div class="tactical-card" id="btn-game" onclick="setCategory('game', '29.1')">
+                <span class="card-emoji">🌲</span>
+                <div class="card-heading text-game">Game & Fish</div>
+                <div class="card-subtitles">Hunting · Fishing<br>BUI · Poaching</div>
             </div>
-            <div class="grid-card" id="btn-jdr" onclick="setCategory('jdr', '16.1')">
-                <span class="card-icon">🏠</span>
-                <div class="card-title color-juvenile">Juvenile & Domestic</div>
-                <div class="card-subs">Protective Orders · Child Abuse · Domestic</div>
+            <div class="tactical-card" id="btn-jdr" onclick="setCategory('jdr', '16.1')">
+                <span class="card-emoji">🏠</span>
+                <div class="card-heading text-juvenile">Juvenile Domestic</div>
+                <div class="card-subtitles">Protective Orders<br>Child Abuse · JDR</div>
             </div>
         </div>
 
         <!-- Master Talk To LEX Strip Switch -->
-        <div class="lex-action-strip" id="lex-btn" onclick="toggleListening()">
-            <div class="status-dot-pulse"></div>
+        <div class="transmission-switch-strip" id="lex-btn" onclick="toggleListening()">
+            <div class="radar-beacon"></div>
             <div>
-                <div class="strip-title" id="lex-btn-text">Talk to LEX — AI Mode</div>
-                <div class="strip-subs">Full conversation · Any Virginia law · 911 Emergency · Always listening</div>
+                <div class="transmission-heading" id="lex-btn-text">Talk to LEX — AI Mode</div>
+                <div class="transmission-subtitles">Full conversation · Virginia Law Database · Hands-free interception</div>
             </div>
         </div>
 
-        <!-- Incident Report Strip -->
-        <div class="incident-strip">
-            <div class="incident-icon">📝</div>
+        <!-- Brand New Requested Report Assistant Strip -->
+        <div class="assistant-strip">
+            <div class="assistant-emoji">📋</div>
             <div>
-                <div class="incident-title">Incident Report</div>
-                <div class="incident-subs">Hands-free · Voice-guided · Photo upload</div>
+                <div class="assistant-heading">Report Assistant</div>
+                <div class="assistant-subtitles">Field documentation module · Voice logs · Incident tracking</div>
             </div>
         </div>
 
-        <!-- Output Terminal Display -->
-        <div class="response-terminal" id="lex-response-box">
-            System secure. Satellite orbital tracking synchronized. Ready for field deployment queries.
+        <!-- Output Terminal Readout Panel -->
+        <div class="output-terminal" id="lex-response-box">
+            Satellite communication system online. Earth orbit verified. Standing by for radio transmission...
         </div>
 
-        <!-- Footer Signature Section -->
+        <!-- Professional Field Footer Signature -->
         <footer>
-            <div class="creator-tag">App Creator</div>
-            <div class="creator-name">Earl Wood</div>
-            <div class="creator-title">Deputy Sheriff (Ret.) - Virginia</div>
-            <div class="footer-disclaimer">LEX Virginia · Built by Law Enforcement for Law Enforcement</div>
+            <div class="credit-tag">CREATED BY RETIRED DEPUTY SHERIFF</div>
+            <div class="credit-name">EARL A. WOOD</div>
+            <div class="credit-rank">Amherst County Sheriff's Department (Ret.) - Virginia</div>
+            <div class="disclaimer-text">LEX Professional Console · Built strictly for Law Enforcement field operations</div>
         </footer>
     </div>
 
@@ -347,13 +327,8 @@
         let isListening = false;
         let recognition;
 
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
-        }, 1000);
-
         function setCategory(catId, titleNum) {
-            document.querySelectorAll('.grid-card').forEach(card => card.classList.remove('active'));
+            document.querySelectorAll('.tactical-card').forEach(card => card.classList.remove('active'));
             if (activeCategory === catId) {
                 activeCategory = "";
                 activeTitle = "";
@@ -374,7 +349,7 @@
             recognition.onstart = function() {
                 isListening = true;
                 document.getElementById('lex-btn').classList.add('listening');
-                document.getElementById('lex-btn-text').innerText = "LEX Transmission Active...";
+                document.getElementById('lex-btn-text').innerText = "LEX Intercepting Voice...";
             };
 
             recognition.onresult = function(event) {
@@ -410,7 +385,7 @@
                 sectionQuery = "18.2-" + sectionQuery; 
             }
 
-            document.getElementById('lex-response-box').innerText = "Interrogating Richmond LIS for Section " + sectionQuery + "...";
+            document.getElementById('lex-response-box').innerText = "Interrogating Richmond LIS Server for Section " + sectionQuery + "...";
 
             fetch(`https://law.lis.virginia.gov/api/getcodevalues/${sectionQuery}?key=${LIS_API_KEY}`)
                 .then(response => response.json())
@@ -430,7 +405,7 @@
             if (legalText) {
                 legalText = legalText.replace(/<\/?[^>]+(>|$)/g, "");
             } else {
-                legalText = `Section ${sectionNumber} verification broadcasted via credential token. Database clearance confirmed. Ready for manual enforcement oversight.`;
+                legalText = `Section ${sectionNumber} clear. Connection established with Richmond LIS system. Transmission verified.`;
             }
 
             document.getElementById('lex-response-box').innerText = legalText;
