@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEX - Law Enforcement Expert</title>
     <style>
+        :root {
+            --tactical-black: #050b14;
+            --command-blue: #1e3a8a;
+            --interface-blue: #3b82f6;
+            --alert-gold: #eab308;
+            --text-main: #ffffff;
+            --terminal-green: #4ade80;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -12,87 +21,20 @@
             font-family: Arial, sans-serif;
         }
 
-        /* FORCE BACKGROUND TO DEEP BLACK/SPACE IF GRADIENTS FAIL */
         body {
-            background-color: #020617;
-            color: #ffffff;
+            background-color: var(--tactical-black);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* --- IMMUTABLE SPACE CANVAS BACKGROUND --- */
-        .space-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1; /* Moved to front layer to ensure visibility */
-            pointer-events: none;
-            background: #030712;
-        }
-
-        /* Direct Absolute Star Elements */
-        .star {
-            position: absolute;
-            background-color: #ffffff;
-            border-radius: 50%;
-            opacity: 0.85;
-        }
-
-        /* Massive High-Visibility Blue and Gold Earth */
-        .earth-sphere {
-            position: absolute;
-            bottom: -150px;
-            right: -150px;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 80%, #030712 100%);
-            box-shadow: 0 0 80px #1e40af, inset -40px -40px 80px #000000;
-            animation: spinEarth 300s linear infinite;
-        }
-
-        /* High-Visibility Satellite Orbit Tracking Path */
-        .satellite-track {
-            position: absolute;
-            bottom: 50px;
-            right: 50px;
-            width: 700px;
-            height: 350px;
-            border: 1px dashed rgba(59, 130, 246, 0.25); /* Visible orbit line */
-            border-radius: 50%;
-            transform: rotate(-20deg);
-        }
-
-        /* Highly Visible Gold/White Satellite Capsule */
-        .satellite-hardware {
-            position: absolute;
-            width: 20px;
-            height: 14px;
-            background-color: #eab308; /* Metallic Gold */
-            border: 2px solid #ffffff;
-            border-radius: 3px;
-            box-shadow: 0 0 20px #eab308, 0 0 8px #ffffff;
-            animation: travelOrbit 12s linear infinite;
-        }
-
-        /* --- FOREGROUND INTERFACE PANEL LAYERS --- */
-        .app-interface {
-            position: relative;
-            z-index: 10; /* Forces text and controls on top of space graphics */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
+        /* HIGH-VISIBILITY PROFESSIONAL HEADER */
         header {
-            padding: 25px;
-            background: rgba(3, 7, 18, 0.92);
-            border-bottom: 3px solid #1e3a8a;
+            padding: 20px 30px;
+            background: #0b1329;
+            border-bottom: 3px solid var(--command-blue);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -101,23 +43,24 @@
         .header-title h1 {
             font-size: 2.2rem;
             letter-spacing: 2px;
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         .header-title h1 span {
-            color: #eab308;
+            color: var(--alert-gold);
         }
 
         .header-title p {
             font-size: 0.9rem;
             color: #9ca3af;
-            margin-top: 5px;
+            margin-top: 4px;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .badge-creator {
             text-align: right;
-            border-left: 3px solid #eab308;
+            border-left: 3px solid var(--alert-gold);
             padding-left: 15px;
         }
 
@@ -128,11 +71,12 @@
 
         .badge-creator strong {
             font-size: 1.1rem;
-            color: #ffffff;
+            color: var(--text-main);
             display: block;
             margin: 2px 0;
         }
 
+        /* INTERFACE GRID CRITICAL FOR FIELD USE */
         .grid-layout {
             flex: 1;
             display: grid;
@@ -144,11 +88,11 @@
             width: 100%;
         }
 
-        /* Left Section: Voice Engine */
+        /* VOICE ENGINE PANEL */
         .voice-engine-panel {
-            background: rgba(11, 21, 40, 0.85);
-            border: 2px solid #3b82f6;
-            border-radius: 8px;
+            background: #0f172a;
+            border: 2px solid var(--interface-blue);
+            border-radius: 6px;
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -160,51 +104,53 @@
         .status-header {
             font-size: 1.3rem;
             font-weight: bold;
-            color: #eab308;
+            color: var(--alert-gold);
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .mic-trigger {
-            width: 150px;
-            height: 150px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            background: #1e3a8a;
-            border: 4px solid #3b82f6;
-            color: #ffffff;
+            background: var(--command-blue);
+            border: 4px solid var(--interface-blue);
+            color: var(--text-main);
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: all 0.2s ease;
+            transition: background 0.2s ease;
         }
 
         .mic-trigger:active {
             border-color: #ef4444;
             box-shadow: 0 0 40px #ef4444;
+            background: #1e40af;
         }
 
         .data-stream-box {
             width: 100%;
-            background: #030712;
+            background: #020617;
             border: 1px solid #4b5563;
-            border-radius: 6px;
+            border-radius: 4px;
             padding: 20px;
             min-height: 160px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.1rem;
-            color: #4ade80;
+            color: var(--terminal-green);
             overflow-y: auto;
         }
 
-        /* Right Section: Field Controls */
+        /* FIELD CONTROLS & STATUTES */
         .field-controls-panel {
-            background: rgba(11, 21, 40, 0.85);
-            border: 2px solid #3b82f6;
-            border-radius: 8px;
+            background: #0f172a;
+            border: 2px solid var(--interface-blue);
+            border-radius: 6px;
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -214,10 +160,11 @@
         .panel-header {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #ffffff;
-            border-bottom: 2px solid #3b82f6;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--interface-blue);
             padding-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .category-matrix {
@@ -227,19 +174,20 @@
         }
 
         .matrix-card {
-            background: #030712;
+            background: #020617;
             border: 1px solid #4b5563;
             padding: 18px;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
+            transition: border-color 0.2s ease;
         }
 
         .matrix-card:hover {
-            border-color: #eab308;
+            border-color: var(--alert-gold);
         }
 
         .matrix-card h3 {
-            color: #eab308;
+            color: var(--alert-gold);
             font-size: 1.1rem;
             margin-bottom: 4px;
         }
@@ -249,7 +197,7 @@
             color: #9ca3af;
         }
 
-        /* Automated Report Processor */
+        /* AUTOMATED REPORT PROCESSOR */
         .report-processor {
             display: flex;
             flex-direction: column;
@@ -260,11 +208,11 @@
         .input-narrative {
             width: 100%;
             flex: 1;
-            background: #030712;
+            background: #020617;
             border: 1px solid #4b5563;
-            border-radius: 6px;
+            border-radius: 4px;
             padding: 15px;
-            color: #ffffff;
+            color: var(--text-main);
             font-size: 1rem;
             resize: none;
         }
@@ -277,9 +225,9 @@
         .action-btn {
             flex: 1;
             padding: 14px;
-            background: #1e3a8a;
-            border: 1px solid #3b82f6;
-            color: #ffffff;
+            background: var(--command-blue);
+            border: 1px solid var(--interface-blue);
+            color: var(--text-main);
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
@@ -288,18 +236,7 @@
 
         .action-btn-gold {
             background: #854d0e;
-            border-color: #eab308;
-        }
-
-        /* --- HARDCODED FALLBACK ANIMATION KEYFRAMES --- */
-        @keyframes spinEarth {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes travelOrbit {
-            from { transform: rotate(0deg) translateX(350px) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(350px) rotate(-360deg); }
+            border-color: var(--alert-gold);
         }
 
         @media (max-width: 1024px) {
@@ -309,27 +246,6 @@
 </head>
 <body>
 
-    <!-- VISUAL BACKGROUND LAYER -->
-    <div class="space-canvas">
-        <!-- Manually positioned high-visibility stars -->
-        <div class="star" style="top: 15%; left: 10%; width: 3px; height: 3px;"></div>
-        <div class="star" style="top: 45%; left: 25%; width: 2px; height: 2px;"></div>
-        <div class="star" style="top: 75%; left: 15%; width: 4px; height: 4px;"></div>
-        <div class="star" style="top: 20%; left: 60%; width: 3px; height: 3px;"></div>
-        <div class="star" style="top: 60%; left: 45%; width: 2px; height: 2px;"></div>
-        <div class="star" style="top: 85%; left: 70%; width: 3px; height: 3px;"></div>
-        <div class="star" style="top: 30%; left: 85%; width: 4px; height: 4px;"></div>
-        
-        <!-- Earth Graphic -->
-        <div class="earth-sphere"></div>
-        
-        <!-- Orbiting Satellite Component -->
-        <div class="satellite-track">
-            <div class="satellite-hardware"></div>
-        </div>
-    </div>
-
-    <!-- APPLICATION INTERFACE LAYER -->
     <div class="app-interface">
         <header>
             <div class="header-title">
@@ -346,16 +262,16 @@
         <main class="grid-layout">
             <!-- VERBAL PANEL -->
             <section class="voice-engine-panel">
-                <div class="status-header" id="engineStatus">SYSTEM ONLINE // AWAITING VOICE TRACE</div>
+                <div class="status-header" id="engineStatus">SYSTEM ONLINE // AWAITING AUDIO COMM</div>
                 
                 <button class="mic-trigger" onclick="activateVoiceInterface()">
                     <span>TAP TO</span>
-                    <span style="color: #eab308; margin-top: 5px;">COMMUNICATE</span>
+                    <span style="color: var(--alert-gold); margin-top: 5px;">SPEAK</span>
                 </button>
 
                 <div class="data-stream-box" id="terminalBox">
-                    [SYSTEM READY]: Interface loaded completely.<br>
-                    Monitoring audio channels for primary statutory commands.
+                    [SYSTEM READY]: Interface loaded.<br>
+                    Monitoring audio channels for Virginia statutory query commands.
                 </div>
             </section>
 
@@ -384,8 +300,8 @@
                 </div>
 
                 <div class="report-processor">
-                    <h2 class="panel-header">Automatic Report Generator</h2>
-                    <textarea class="input-narrative" id="dispatchNarrative" placeholder="Awaiting verbal input to compile official shift reporting metrics..."></textarea>
+                    <h2 class="panel-header">Automatic Report Generator (Bonus Module)</h2>
+                    <textarea class="input-narrative" id="dispatchNarrative" placeholder="Awaiting operational narrative processing..."></textarea>
                     <div class="action-row">
                         <button class="action-btn" onclick="executePdfExport()">Print Report (PDF)</button>
                         <button class="action-btn action-btn-gold" onclick="executeEmailTransmission()">Email Report</button>
@@ -403,7 +319,7 @@
             terminal.innerHTML = `[AUDIO CHANNEL ACTIVATED]: Listening...<br>`;
             document.getElementById('engineStatus').innerText = "LISTENING LIVE";
             
-            // Simulating instant processing loop for local rendering testing
+            // Simulation loop for testing field deployment responses
             setTimeout(() => {
                 terminal.innerHTML += `[OFFICER]: What is 18.2-308<br>`;
                 executeVocalResponse("Code 18.2-308. Carrying concealed weapon. Class 1 Misdemeanor classification.", terminal);
@@ -417,15 +333,15 @@
             const vocalTrack = new SpeechSynthesisUtterance(phrase);
             const availableVoices = speechAudioEngine.getVoices();
             
-            // Explicitly force professional heavy male audio profile if present on machine
+            // Map strictly to a deep, steady professional voice profile
             const operationalVoice = availableVoices.find(v => v.name.includes('Male') || v.name.includes('Google US English'));
             if (operationalVoice) vocalTrack.voice = operationalVoice;
             
-            vocalTrack.rate = 0.95; // Force clear, deliberate speed
-            vocalTrack.pitch = 0.85; // Force deeper authoritative baritone profile
+            vocalTrack.rate = 0.95; 
+            vocalTrack.pitch = 0.85; 
             
             vocalTrack.onend = () => {
-                document.getElementById('engineStatus').innerText = "SYSTEM ONLINE // AWAITING VOICE TRACE";
+                document.getElementById('engineStatus').innerText = "SYSTEM ONLINE // AWAITING AUDIO COMM";
             };
             
             speechAudioEngine.speak(vocalTrack);
