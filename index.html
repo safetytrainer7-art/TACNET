@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,36 +9,25 @@
         body, html { 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: #020208; 
+            background-color: #020208;
             color: #ffffff; 
             overflow: hidden;
         }
 
-        /* Earth Space Background Visual Elements */
-        .space-bg {
+        /* Restoring Your Official Visual Graphic Background */
+        .lex-official-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #0d133a 0%, #020208 85%);
+            background: url('tac-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
             z-index: -2;
         }
-        .stars {
+        
+        /* Dark overlay to ensure your tactical text remains perfectly visible */
+        .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
-            background-size: 550px 550px, 350px 350px;
-            background-position: 0 0, 40px 60px;
-            opacity: 0.5;
-            z-index: -1;
-        }
-        /* Orbiting Satellite Tracking Grid Lines */
-        .satellite-grid {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background: rgba(2, 2, 8, 0.65);
             z-index: -1;
         }
 
@@ -59,7 +47,7 @@
             text-align: center;
             padding: 15px 0;
             border-bottom: 2px solid rgba(59, 130, 246, 0.4);
-            background: rgba(10, 15, 40, 0.65);
+            background: rgba(10, 15, 40, 0.75);
             backdrop-filter: blur(5px);
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
@@ -81,7 +69,7 @@
             margin-bottom: 15px;
         }
         .category-btn {
-            background: rgba(13, 20, 50, 0.8);
+            background: rgba(13, 20, 50, 0.85);
             border: 1px solid rgba(59, 130, 246, 0.4);
             color: #e5e7eb;
             padding: 16px 10px;
@@ -93,7 +81,7 @@
             text-transform: uppercase;
         }
         .category-btn.active {
-            background: rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.35);
             border-color: #3b82f6;
             color: #ffffff;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
@@ -107,7 +95,7 @@
             margin: 15px 0;
         }
         .lex-master-btn {
-            background: rgba(10, 25, 40, 0.8);
+            background: rgba(10, 25, 40, 0.9);
             border: 3px solid #10b981;
             color: #10b981;
             padding: 20px 45px;
@@ -129,7 +117,7 @@
         
         /* Output Terminals */
         .display-panel {
-            background: rgba(7, 11, 30, 0.85);
+            background: rgba(7, 11, 30, 0.9);
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 8px;
             padding: 12px;
@@ -157,15 +145,14 @@
 </head>
 <body>
 
-    <!-- Earth Space Visual Foundations Restored -->
-    <div class="space-bg"></div>
-    <div class="stars"></div>
-    <div class="satellite-grid"></div>
+    <!-- Official Background Image Link Re-established -->
+    <div class="lex-official-bg"></div>
+    <div class="overlay"></div>
 
     <div class="app-container">
         <header>
             <h1>LEX OFFICIAL INTERFACE</h1>
-            <p>SATELLITE SYNC // VIRGINIA DATA LINK ACTIVE</p>
+            <p>VIRGINIA DATABASE INTEGRATION ACTIVE</p>
         </header>
 
         <div class="category-grid">
@@ -186,7 +173,7 @@
 
         <div class="display-panel" style="height: 180px; overflow-y: auto;">
             <div class="panel-title">LEX Live Database Response</div>
-            <div class="panel-text" id="lex-response-box">System secure. Space orbital grid tracking initialized. Ready for field deployment queries.</div>
+            <div class="panel-text" id="lex-response-box">System secure. Official tactical interface synchronized. Ready for deployment.</div>
         </div>
     </div>
 
@@ -271,8 +258,10 @@
             if (stateData) {
                 if (typeof stateData === 'string') { legalText = stateData; }
                 else if (typeof stateData === 'object') {
-                    legalText = stateData.text || stateData.content || stateData.body || stateData.SectionText;
-                    if (!legalText && stateData.section) { legalText = stateData.section.text || stateData.section.content; }
+                    legalText = data.text || data.content || data.body || data.SectionText || data.description;
+                    if (!legalText && stateData.section && typeof stateData.section === 'object') {
+                        legalText = stateData.section.text || stateData.section.content || stateData.section.body;
+                    }
                 }
             }
 
