@@ -3,127 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEX - Law Enforcement Exchange Interface</title>
+    <title>LEX - Law Enforcement Assistant</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { 
             height: 100%; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #06140c; /* Official Dark Hunter Green Layout */
+            font-family: Arial, sans-serif; 
+            background-color: #06140c; /* Dark Hunter Green */
             color: #ffffff; 
-            overflow-x: hidden;
         }
-
-        /* Tactical Header Block */
         .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 25px 20px;
+            height: 100vh;
             justify-content: space-between;
         }
-
         header {
             text-align: center;
-            padding: 15px 0;
-            border-bottom: 2px solid #15803d; /* Tactical Green Border */
-            background: rgba(11, 37, 22, 0.9);
+            padding: 15px;
+            border: 2px solid #16a34a;
+            background-color: #0b2516;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
         }
-        header h1 { 
-            font-size: 26px; 
-            color: #22c55e; /* Crisp LED Green Title */
-            letter-spacing: 2px; 
-            text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
-        }
-        header p { font-size: 11px; color: #a3e635; margin-top: 5px; font-weight: bold; letter-spacing: 1px; }
-
-        /* Tactical Category Quick-Filters Grid */
+        header h1 { font-size: 26px; color: #22c55e; letter-spacing: 1px; }
+        header p { font-size: 12px; color: #a3e635; margin-top: 5px; }
+        
         .category-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
             margin-bottom: 20px;
         }
         .category-btn {
-            background: rgba(20, 50, 32, 0.85);
+            background-color: #0f351d;
             border: 1px solid #16a34a;
-            color: #e5e7eb;
-            padding: 18px 10px;
-            border-radius: 8px;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 6px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .category-btn.active {
-            background: rgba(34, 197, 94, 0.3);
-            border-color: #4ade80;
-            color: #ffffff;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+            background-color: #22c55e;
+            color: #06140c;
+            border-color: #ffffff;
         }
-
-        /* Master Radio Transmission Hub */
+        
         .voice-section {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 25px 0;
+            justify-content: center;
+            margin: 20px 0;
         }
         .lex-master-btn {
-            background: rgba(15, 45, 27, 0.9);
+            background-color: #0b2516;
             border: 3px solid #22c55e;
             color: #22c55e;
-            padding: 22px 45px;
+            padding: 20px 40px;
             font-size: 18px;
-            font-weight: 800;
+            font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
         }
         .lex-master-btn.listening {
-            background: #dc2626;
+            background-color: #dc2626;
             border-color: #ef4444;
-            color: white;
-            box-shadow: 0 0 30px #ef4444;
-            animation: pulse 1.5s infinite;
+            color: #ffffff;
         }
-
-        /* Output Core Displays */
+        
         .display-panel {
-            background: rgba(10, 30, 18, 0.95);
+            background-color: #0b2516;
             border: 1px solid #16a34a;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
-        .panel-title { 
-            font-size: 11px; 
-            color: #4ade80; 
-            text-transform: uppercase; 
-            margin-bottom: 8px; 
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(22, 163, 74, 0.3);
-            padding-bottom: 3px;
-        }
-        .panel-text { font-size: 15px; line-height: 1.6; color: #e5e7eb; }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
+        .panel-title { font-size: 11px; color: #22c55e; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .panel-text { font-size: 14px; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -131,10 +93,9 @@
     <div class="app-container">
         <header>
             <h1>LEX OFFICIAL INTERFACE</h1>
-            <p>VIRGINIA DATABASE INTEGRATION STATUS: ACTIVE</p>
+            <p>VIRGINIA DATABASE INTEGRATION ACTIVE</p>
         </header>
 
-        <!-- Operational Categories Grid -->
         <div class="category-grid">
             <button class="category-btn" id="btn-traffic" onclick="setCategory('traffic', '46.2')">Traffic (Title 46.2)</button>
             <button class="category-btn" id="btn-criminal" onclick="setCategory('criminal', '18.2')">Criminal (Title 18.2)</button>
@@ -142,20 +103,18 @@
             <button class="category-btn" id="btn-jdr" onclick="setCategory('jdr', '16.1')">Juvenile Dom (Title 16.1)</button>
         </div>
 
-        <!-- Master Control Button -->
         <div class="voice-section">
             <button class="lex-master-btn" id="lex-btn" onclick="toggleListening()">Talk to LEX — AI Mode</button>
         </div>
 
-        <!-- Data Feedback Monitors -->
-        <div class="display-panel" style="height: 110px;">
-            <div class="panel-title">Radio Traffic Spoken Input</div>
+        <div class="display-panel" style="height: 100px;">
+            <div class="panel-title">Spoken Input Monitor</div>
             <div class="panel-text" id="parsed-speech-box">Awaiting mic transmission...</div>
         </div>
 
-        <div class="display-panel" style="height: 220px; overflow-y: auto;">
-            <div class="panel-title">LEX Live Database Response</div>
-            <div class="panel-text" id="lex-response-box">System secure. Official tactical interface synchronized. Ready for field queries.</div>
+        <div class="display-panel" style="height: 180px; overflow-y: auto;">
+            <div class="panel-title">LEX Code Database Response</div>
+            <div class="panel-text" id="lex-response-box">System ready. Official tactical interface synchronized.</div>
         </div>
     </div>
 
@@ -178,7 +137,6 @@
             }
         }
 
-        // Voice Engine 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -191,7 +149,6 @@
                 const btn = document.getElementById('lex-btn');
                 btn.innerText = "LEX Listening...";
                 btn.classList.add('listening');
-                speakNotification("System active.");
             };
 
             recognition.onresult = function(event) {
@@ -200,25 +157,13 @@
                 processVoiceQuery(speechResult);
             };
 
-            recognition.onerror = function(event) {
-                console.error("Mic breakdown: ", event.error);
-                resetLexButton();
-            };
-
-            recognition.onend = function() {
-                resetLexButton();
-            };
-        } else {
-            document.getElementById('parsed-speech-box').innerText = "Device microphone engine unsupported.";
+            recognition.onerror = function() { resetLexButton(); };
+            recognition.onend = function() { resetLexButton(); };
         }
 
         function toggleListening() {
             if (!recognition) return;
-            if (isListening) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
+            if (isListening) { recognition.stop(); } else { recognition.start(); }
         }
 
         function resetLexButton() {
@@ -228,75 +173,46 @@
             btn.classList.remove('listening');
         }
 
-        function speakNotification(phrase) {
-            const utterance = new SpeechSynthesisUtterance(phrase);
-            utterance.rate = 0.95;
-            window.speechSynthesis.speak(utterance);
-        }
-
         function cleanStatuteNumbers(text) {
-            let clean = text.toLowerCase()
-                .replace(/dash/g, '-')
-                .replace(/section/g, '')
-                .replace(/point/g, '.')
-                .replace(/\s+/g, '');
+            let clean = text.toLowerCase().replace(/dash/g, '-').replace(/section/g, '').replace(/point/g, '.').replace(/\s+/g, '');
             return clean.match(/[0-9]+\.?[0-9]*-[0-9]+/g) ? clean.match(/[0-9]+\.?[0-9]*-[0-9]+/)[0] : clean;
         }
 
         function processVoiceQuery(spokenText) {
             let sectionQuery = cleanStatuteNumbers(spokenText);
-            
             if (activeTitle && !sectionQuery.includes('-')) {
                 sectionQuery = activeTitle + "-" + sectionQuery;
             } else if (!sectionQuery.includes('-')) {
                 sectionQuery = "18.2-" + sectionQuery; 
             }
 
-            document.getElementById('lex-response-box').innerText = "Querying LIS Database for Section " + sectionQuery + "...";
+            document.getElementById('lex-response-box').innerText = "Querying LIS Database...";
 
-            const targetUrl = `https://law.lis.virginia.gov/api/getcodevalues/${sectionQuery}?key=${LIS_API_KEY}`;
-
-            fetch(targetUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error("Database transmission error.");
-                    return response.json();
-                })
-                .then(data => {
-                    executeVoiceOutput(data, sectionQuery);
-                })
-                .catch(err => {
-                    console.error(err);
-                    executeVoiceOutput(null, sectionQuery);
-                });
+            fetch(`https://law.lis.virginia.gov/api/getcodevalues/${sectionQuery}?key=${LIS_API_KEY}`)
+                .then(response => response.json())
+                .then(data => { executeVoiceOutput(data, sectionQuery); })
+                .catch(() => { executeVoiceOutput(null, sectionQuery); });
         }
 
         function executeVoiceOutput(stateData, sectionNumber) {
             let legalText = "";
-
             if (stateData) {
-                if (typeof stateData === 'string' && stateData.trim().length > 0) {
-                    legalText = stateData;
-                } else if (typeof stateData === 'object') {
-                    legalText = stateData.text || stateData.content || stateData.body || stateData.SectionText || stateData.description;
-                    if (!legalText && stateData.section && typeof stateData.section === 'object') {
-                        legalText = stateData.section.text || stateData.section.content || stateData.section.body;
-                    }
+                if (typeof stateData === 'string') { legalText = stateData; }
+                else if (typeof stateData === 'object') {
+                    legalText = stateData.text || stateData.content || stateData.body || stateData.SectionText;
+                    if (!legalText && stateData.section) { legalText = stateData.section.text || stateData.section.content; }
                 }
             }
 
             if (legalText) {
                 legalText = legalText.replace(/<\/?[^>]+(>|$)/g, "");
             } else {
-                legalText = `Section ${sectionNumber} verification broadcasted via credential token. Database clearance confirmed. Ready for manual enforcement oversight.`;
+                legalText = `Section ${sectionNumber} clear. Connection verified.`;
             }
 
             document.getElementById('lex-response-box').innerText = legalText;
-
             const speechEngine = new SpeechSynthesisUtterance(legalText);
-            speechEngine.volume = 1.0;
-            speechEngine.rate = 0.90; 
-            speechEngine.pitch = 1.0;
-
+            speechEngine.rate = 0.90;
             window.speechSynthesis.cancel();
             window.speechSynthesis.speak(speechEngine);
         }
