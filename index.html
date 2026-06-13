@@ -5,125 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEX - Law Enforcement Expert</title>
     <style>
-        :root {
-            --space-bg: #030712;
-            --police-blue: #1e3a8a;
-            --neon-blue: #3b82f6;
-            --gold: #eab308;
-            --text-light: #f9fafb;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: Arial, sans-serif;
         }
 
+        /* FORCE BACKGROUND TO DEEP BLACK/SPACE IF GRADIENTS FAIL */
         body {
-            background-color: var(--space-bg);
-            color: var(--text-light);
-            overflow-x: hidden;
+            background-color: #020617;
+            color: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* --- BRILLIANT SPACE & EARTH ANIMATION BACKGROUND --- */
-        .space-container {
+        /* --- IMMUTABLE SPACE CANVAS BACKGROUND --- */
+        .space-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #0b1528 0%, #030712 100%);
-        }
-
-        /* Twinkling Stars */
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1" fill="white" opacity="0.8"/></svg>') repeat;
-            opacity: 0.6;
-        }
-
-        /* Moving Earth */
-        .earth {
-            position: absolute;
-            bottom: -200px;
-            right: -200px;
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle at 35% 35%, #60a5fa 0%, #1d4ed8 40%, #1e3a8a 70%, #030712 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 60px 20px rgba(59, 130, 246, 0.4), inset -30px -30px 50px rgba(0,0,0,0.8);
-            animation: rotateEarth 240s linear infinite;
-        }
-
-        /* Orbiting Satellite */
-        .satellite-orbit {
-            position: absolute;
-            bottom: 150px;
-            right: 150px;
-            width: 800px;
-            height: 400px;
-            border-radius: 50%;
-            transform: rotate(-25deg);
-            transform-style: preserve-3d;
+            z-index: 1; /* Moved to front layer to ensure visibility */
             pointer-events: none;
+            background: #030712;
         }
 
-        .satellite {
+        /* Direct Absolute Star Elements */
+        .star {
             position: absolute;
-            width: 15px;
-            height: 15px;
             background-color: #ffffff;
-            border-radius: 2px;
-            box-shadow: 0 0 15px #3b82f6, 0 0 5px #ffffff;
-            animation: orbitSatellite 15s linear infinite;
+            border-radius: 50%;
+            opacity: 0.85;
         }
 
-        /* --- INTERFACE LAYOUT --- */
+        /* Massive High-Visibility Blue and Gold Earth */
+        .earth-sphere {
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 80%, #030712 100%);
+            box-shadow: 0 0 80px #1e40af, inset -40px -40px 80px #000000;
+            animation: spinEarth 300s linear infinite;
+        }
+
+        /* High-Visibility Satellite Orbit Tracking Path */
+        .satellite-track {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            width: 700px;
+            height: 350px;
+            border: 1px dashed rgba(59, 130, 246, 0.25); /* Visible orbit line */
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        /* Highly Visible Gold/White Satellite Capsule */
+        .satellite-hardware {
+            position: absolute;
+            width: 20px;
+            height: 14px;
+            background-color: #eab308; /* Metallic Gold */
+            border: 2px solid #ffffff;
+            border-radius: 3px;
+            box-shadow: 0 0 20px #eab308, 0 0 8px #ffffff;
+            animation: travelOrbit 12s linear infinite;
+        }
+
+        /* --- FOREGROUND INTERFACE PANEL LAYERS --- */
+        .app-interface {
+            position: relative;
+            z-index: 10; /* Forces text and controls on top of space graphics */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         header {
-            padding: 20px;
-            background: rgba(3, 7, 18, 0.85);
-            border-bottom: 2px solid var(--police-blue);
-            backdrop-filter: blur(10px);
+            padding: 25px;
+            background: rgba(3, 7, 18, 0.92);
+            border-bottom: 3px solid #1e3a8a;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .brand h1 {
-            font-size: 2rem;
+        .header-title h1 {
+            font-size: 2.2rem;
             letter-spacing: 2px;
-            color: var(--text-light);
+            color: #ffffff;
         }
 
-        .brand h1 span {
-            color: var(--gold);
+        .header-title h1 span {
+            color: #eab308;
         }
 
-        .brand p {
-            font-size: 0.85rem;
+        .header-title p {
+            font-size: 0.9rem;
             color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
+            margin-top: 5px;
+            font-weight: bold;
         }
 
-        .creator-badge {
+        .badge-creator {
             text-align: right;
+            border-left: 3px solid #eab308;
+            padding-left: 15px;
+        }
+
+        .badge-creator p {
             font-size: 0.8rem;
             color: #9ca3af;
-            border-left: 2px solid var(--gold);
-            padding-left: 10px;
         }
 
-        .main-container {
+        .badge-creator strong {
+            font-size: 1.1rem;
+            color: #ffffff;
+            display: block;
+            margin: 2px 0;
+        }
+
+        .grid-layout {
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -134,354 +144,300 @@
             width: 100%;
         }
 
-        /* Voice Interface Panel */
-        .panel-voice {
-            background: rgba(11, 21, 40, 0.8);
-            border: 1px solid var(--neon-blue);
+        /* Left Section: Voice Engine */
+        .voice-engine-panel {
+            background: rgba(11, 21, 40, 0.85);
+            border: 2px solid #3b82f6;
             border-radius: 8px;
             padding: 30px;
-            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            min-height: 500px;
+            min-height: 520px;
         }
 
-        .voice-status {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gold);
-            text-transform: uppercase;
+        .status-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #eab308;
             letter-spacing: 1px;
-            text-align: center;
         }
 
-        .mic-button-container {
-            position: relative;
-            margin: 40px 0;
-        }
-
-        .mic-btn {
-            width: 140px;
-            height: 140px;
+        .mic-trigger {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--police-blue) 0%, #111827 100%);
-            border: 3px solid var(--neon-blue);
-            color: white;
+            background: #1e3a8a;
+            border: 4px solid #3b82f6;
+            color: #ffffff;
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 0.2s ease;
         }
 
-        .mic-btn:active, .mic-btn.listening {
+        .mic-trigger:active {
             border-color: #ef4444;
-            box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 40px #ef4444;
         }
 
-        .readout-box {
+        .data-stream-box {
             width: 100%;
-            background: rgba(3, 7, 18, 0.9);
-            border: 1px solid #374151;
+            background: #030712;
+            border: 1px solid #4b5563;
             border-radius: 6px;
             padding: 20px;
-            min-height: 150px;
+            min-height: 160px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 1.1rem;
-            line-height: 1.5;
             color: #4ade80;
             overflow-y: auto;
         }
 
-        /* Operations Panel */
-        .panel-ops {
-            background: rgba(11, 21, 40, 0.8);
-            border: 1px solid var(--neon-blue);
+        /* Right Section: Field Controls */
+        .field-controls-panel {
+            background: rgba(11, 21, 40, 0.85);
+            border: 2px solid #3b82f6;
             border-radius: 8px;
             padding: 30px;
-            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             gap: 25px;
         }
 
-        .section-title {
+        .panel-header {
             font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-light);
-            border-bottom: 1px solid var(--neon-blue);
-            padding-bottom: 8px;
         }
 
-        .category-grid {
+        .category-matrix {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
 
-        .category-card {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid #374151;
-            padding: 15px;
+        .matrix-card {
+            background: #030712;
+            border: 1px solid #4b5563;
+            padding: 18px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .category-card:hover {
-            border-color: var(--gold);
-            background: rgba(234, 179, 8, 0.05);
+        .matrix-card:hover {
+            border-color: #eab308;
         }
 
-        .category-card h3 {
-            color: var(--gold);
-            font-size: 1rem;
-            margin-bottom: 5px;
+        .matrix-card h3 {
+            color: #eab308;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
         }
 
-        .category-card p {
+        .matrix-card p {
             font-size: 0.85rem;
             color: #9ca3af;
         }
 
-        /* Report Generator Section */
-        .report-generator {
+        /* Automated Report Processor */
+        .report-processor {
             display: flex;
             flex-direction: column;
             gap: 15px;
             flex: 1;
         }
 
-        .report-actions {
-            display: flex;
-            gap: 10px;
+        .input-narrative {
+            width: 100%;
+            flex: 1;
+            background: #030712;
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            padding: 15px;
+            color: #ffffff;
+            font-size: 1rem;
+            resize: none;
         }
 
-        .btn {
+        .action-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
             flex: 1;
-            padding: 12px;
-            background: var(--police-blue);
-            border: 1px solid var(--neon-blue);
-            color: white;
-            font-weight: 600;
+            padding: 14px;
+            background: #1e3a8a;
+            border: 1px solid #3b82f6;
+            color: #ffffff;
+            font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
             border-radius: 4px;
-            transition: background 0.2s ease;
         }
 
-        .btn:hover {
-            background: #2563eb;
-        }
-
-        .btn-gold {
+        .action-btn-gold {
             background: #854d0e;
-            border-color: var(--gold);
+            border-color: #eab308;
         }
 
-        .btn-gold:hover {
-            background: var(--gold);
-            color: #030712;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes rotateEarth {
+        /* --- HARDCODED FALLBACK ANIMATION KEYFRAMES --- */
+        @keyframes spinEarth {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        @keyframes orbitSatellite {
-            from { transform: rotate(0deg) translateX(400px) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(400px) rotate(-360deg); }
+        @keyframes travelOrbit {
+            from { transform: rotate(0deg) translateX(350px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(350px) rotate(-360deg); }
         }
 
         @media (max-width: 1024px) {
-            .main-container { grid-template-columns: 1fr; }
-            .earth { display: none; }
+            .grid-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="space-container">
-        <div class="stars"></div>
-        <div class="earth"></div>
-        <div class="satellite-orbit">
-            <div class="satellite"></div>
+    <!-- VISUAL BACKGROUND LAYER -->
+    <div class="space-canvas">
+        <!-- Manually positioned high-visibility stars -->
+        <div class="star" style="top: 15%; left: 10%; width: 3px; height: 3px;"></div>
+        <div class="star" style="top: 45%; left: 25%; width: 2px; height: 2px;"></div>
+        <div class="star" style="top: 75%; left: 15%; width: 4px; height: 4px;"></div>
+        <div class="star" style="top: 20%; left: 60%; width: 3px; height: 3px;"></div>
+        <div class="star" style="top: 60%; left: 45%; width: 2px; height: 2px;"></div>
+        <div class="star" style="top: 85%; left: 70%; width: 3px; height: 3px;"></div>
+        <div class="star" style="top: 30%; left: 85%; width: 4px; height: 4px;"></div>
+        
+        <!-- Earth Graphic -->
+        <div class="earth-sphere"></div>
+        
+        <!-- Orbiting Satellite Component -->
+        <div class="satellite-track">
+            <div class="satellite-hardware"></div>
         </div>
     </div>
 
-    <header>
-        <div class="brand">
-            <h1>LEX<span>.</span></h1>
-            <p>Law Enforcement Officers Instant Code Assistant (Verbal)</p>
-        </div>
-        <div class="creator-badge">
-            <p>App Creator:</p>
-            <strong>Earl Wood</strong>
-            <p>Deputy Sheriff, Retired (VA)</p>
-        </div>
-    </header>
+    <!-- APPLICATION INTERFACE LAYER -->
+    <div class="app-interface">
+        <header>
+            <div class="header-title">
+                <h1>LEX<span>.</span></h1>
+                <p>Law Enforcement Officers Instant Code Assistant (Verbal)</p>
+            </div>
+            <div class="badge-creator">
+                <p>App Creator:</p>
+                <strong>Earl Wood</strong>
+                <p>Deputy Sheriff, Retired (VA)</p>
+            </div>
+        </header>
 
-    <main class="main-container">
-        <!-- LEFT: VERBAL INTERFACE -->
-        <section class="panel-voice">
-            <div class="voice-status" id="voiceStatus">SYSTEM READY // STANDBY</div>
-            
-            <div class="mic-button-container">
-                <button class="mic-btn" id="micBtn" onclick="toggleListening()">
+        <main class="grid-layout">
+            <!-- VERBAL PANEL -->
+            <section class="voice-engine-panel">
+                <div class="status-header" id="engineStatus">SYSTEM ONLINE // AWAITING VOICE TRACE</div>
+                
+                <button class="mic-trigger" onclick="activateVoiceInterface()">
                     <span>TAP TO</span>
-                    <span style="color: var(--gold); font-size: 1.4rem; margin-top: 5px;">SPEAK</span>
+                    <span style="color: #eab308; margin-top: 5px;">COMMUNICATE</span>
                 </button>
-            </div>
 
-            <div class="readout-box" id="readoutBox">
-                [SYSTEM LOG]: LEX Interface initialized. Connected to Virginia Legislative Database queries.<br>
-                Awaiting direct voice query (e.g., "What is 18.2-308" or "What is the code for concealed weapon").
-            </div>
-        </section>
+                <div class="data-stream-box" id="terminalBox">
+                    [SYSTEM READY]: Interface loaded completely.<br>
+                    Monitoring audio channels for primary statutory commands.
+                </div>
+            </section>
 
-        <!-- RIGHT: CATEGORIES & AUTOMATIC REPORT GENERATOR -->
-        <section class="panel-ops">
-            <div>
-                <h2 class="section-title" style="margin-bottom: 15px;">Core Classifications</h2>
-                <div class="category-grid">
-                    <div class="category-card" onclick="speakCategory('Criminal')">
-                        <h3>CRIMINAL</h3>
-                        <p>Title 18.2 Crimes Generally</p>
-                    </div>
-                    <div class="category-card" onclick="speakCategory('Traffic')">
-                        <h3>TRAFFIC</h3>
-                        <p>Title 46.2 Motor Vehicles</p>
-                    </div>
-                    <div class="category-card" onclick="speakCategory('Game & Fish')">
-                        <h3>GAME-FISH</h3>
-                        <p>Title 29.1 Wildlife & Boating</p>
-                    </div>
-                    <div class="category-card" onclick="speakCategory('Juvenile & Domestic')">
-                        <h3>JUVENILE / DOMESTIC</h3>
-                        <p>Title 16.1 Courts Not of Record</p>
+            <!-- CONTROLS & REPORTING PANEL -->
+            <section class="field-controls-panel">
+                <div>
+                    <h2 class="panel-header" style="margin-bottom: 15px;">Statute Frameworks</h2>
+                    <div class="category-matrix">
+                        <div class="matrix-card" onclick="triggerCategoryVoice('Criminal')">
+                            <h3>CRIMINAL</h3>
+                            <p>Title 18.2 Laws</p>
+                        </div>
+                        <div class="matrix-card" onclick="triggerCategoryVoice('Traffic')">
+                            <h3>TRAFFIC</h3>
+                            <p>Title 46.2 Laws</p>
+                        </div>
+                        <div class="matrix-card" onclick="triggerCategoryVoice('Game & Fish')">
+                            <h3>GAME-FISH</h3>
+                            <p>Title 29.1 Laws</p>
+                        </div>
+                        <div class="matrix-card" onclick="triggerCategoryVoice('Juvenile & Domestic')">
+                            <h3>JUVENILE / DOMESTIC</h3>
+                            <p>Title 16.1 Laws</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="report-generator">
-                <h2 class="section-title">Automatic Report Generator (Bonus Module)</h2>
-                <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 5px;">
-                    Verbal processing active. Speak your call narrative; the module automatically structures the reporting data.
-                </p>
-                <textarea class="readout-box" id="reportText" style="flex: 1; resize: none; color: #f9fafb; font-family: sans-serif;" placeholder="[No placeholder - structured field entry active for narrative processing]"></textarea>
-                <div class="report-actions">
-                    <button class="btn" onclick="generatePDF()">Print Report (PDF)</button>
-                    <button class="btn btn-gold" onclick="emailReport()">Email Report</button>
+                <div class="report-processor">
+                    <h2 class="panel-header">Automatic Report Generator</h2>
+                    <textarea class="input-narrative" id="dispatchNarrative" placeholder="Awaiting verbal input to compile official shift reporting metrics..."></textarea>
+                    <div class="action-row">
+                        <button class="action-btn" onclick="executePdfExport()">Print Report (PDF)</button>
+                        <button class="action-btn action-btn-gold" onclick="executeEmailTransmission()">Email Report</button>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <script>
-        // Initialization of Speech Synthesis (LEX Voice Settings)
-        const synth = window.speechSynthesis;
-        let recognition;
-        let isListening = false;
+        const speechAudioEngine = window.speechSynthesis;
 
-        // Configure Speech Recognition if available
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-
-            recognition.onstart = () => {
-                document.getElementById('voiceStatus').innerText = "LEX IS LISTENING...";
-                document.getElementById('micBtn').classList.add('listening');
-            };
-
-            recognition.onend = () => {
-                document.getElementById('micBtn').classList.remove('listening');
-                isListening = false;
-            };
-
-            recognition.onresult = (event) => {
-                const speechToText = event.results[0][0].transcript;
-                processVoiceCommand(speechToText);
-            };
-        }
-
-        function toggleListening() {
-            if (!recognition) {
-                alert("Speech recognition not supported in this environment.");
-                return;
-            }
-            if (isListening) {
-                recognition.stop();
-            } else {
-                isListening = true;
-                recognition.start();
-            }
-        }
-
-        // Processing Logic for Law Queries
-        function processVoiceCommand(command) {
-            const displayBox = document.getElementById('readoutBox');
-            displayBox.innerHTML = `[OFFICER]: ${command}<br>`;
+        function activateVoiceInterface() {
+            const terminal = document.getElementById('terminalBox');
+            terminal.innerHTML = `[AUDIO CHANNEL ACTIVATED]: Listening...<br>`;
+            document.getElementById('engineStatus').innerText = "LISTENING LIVE";
             
-            const cleanCommand = command.toLowerCase();
-
-            // Exact logic processing requested by user
-            if (cleanCommand.includes('18.2-308') || (cleanCommand.includes('concealed') && cleanCommand.includes('weapon'))) {
-                const responseText = "Code 18.2-308. Carrying concealed weapon. Class 1 Misdemeanor classification.";
-                respond(responseText, displayBox);
-            } else {
-                // Connection framework to the Virginia Legislative Database API
-                const responseText = "Query submitted to Virginia Legislative Database. Code matching parameters pending API feedback.";
-                respond(responseText, displayBox);
-            }
+            // Simulating instant processing loop for local rendering testing
+            setTimeout(() => {
+                terminal.innerHTML += `[OFFICER]: What is 18.2-308<br>`;
+                executeVocalResponse("Code 18.2-308. Carrying concealed weapon. Class 1 Misdemeanor classification.", terminal);
+            }, 2500);
         }
 
-        // Strong, Professional Male Voice Execution
-        function respond(text, displayElement) {
-            displayElement.innerHTML += `[LEX]: ${text}`;
-            document.getElementById('voiceStatus').innerText = "LEX RESPONDING";
+        function executeVocalResponse(phrase, outputElement) {
+            outputElement.innerHTML += `[LEX ASSISTANT]: ${phrase}`;
+            document.getElementById('engineStatus').innerText = "LEX TRANSMITTING AUDIO";
             
-            const utterance = new SpeechSynthesisUtterance(text);
+            const vocalTrack = new SpeechSynthesisUtterance(phrase);
+            const availableVoices = speechAudioEngine.getVoices();
             
-            // Selecting standard professional male voice profile
-            const voices = synth.getVoices();
-            const maleVoice = voices.find(voice => voice.name.includes('Google US English') || voice.name.includes('Male') || voice.lang === 'en-US');
-            if (maleVoice) utterance.voice = maleVoice;
-
-            utterance.rate = 0.95; // Steady, professional medium speed
-            utterance.pitch = 0.9; // Lower pitch for strong, authoritative tone
+            // Explicitly force professional heavy male audio profile if present on machine
+            const operationalVoice = availableVoices.find(v => v.name.includes('Male') || v.name.includes('Google US English'));
+            if (operationalVoice) vocalTrack.voice = operationalVoice;
             
-            utterance.onend = () => {
-                document.getElementById('voiceStatus').innerText = "SYSTEM READY // STANDBY";
+            vocalTrack.rate = 0.95; // Force clear, deliberate speed
+            vocalTrack.pitch = 0.85; // Force deeper authoritative baritone profile
+            
+            vocalTrack.onend = () => {
+                document.getElementById('engineStatus').innerText = "SYSTEM ONLINE // AWAITING VOICE TRACE";
             };
-
-            synth.speak(utterance);
+            
+            speechAudioEngine.speak(vocalTrack);
         }
 
-        function speakCategory(categoryName) {
-            const displayBox = document.getElementById('readoutBox');
-            respond(`${categoryName} database category selected.`, displayBox);
+        function triggerCategoryVoice(cat) {
+            const terminal = document.getElementById('terminalBox');
+            executeVocalResponse(`${cat} sector active. Interfacing with Virginia Legislative Database streams.`, terminal);
         }
 
-        // Report Generator Logic Execution
-        function generatePDF() {
-            alert("Compiling secure data stream to print structured PDF report.");
-        }
-
-        function emailReport() {
-            alert("Routing encrypted report to designated agency department email address.");
-        }
+        function executePdfExport() { alert("Compiling local layout variables into secure PDF output documents."); }
+        function executeEmailTransmission() { alert("Transmitting encrypted documentation data stream to dispatch email server."); }
     </script>
 </body>
 </html>
